@@ -35,11 +35,17 @@ public class CourseController {
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<Course> getCourseByName(
+    public ResponseEntity<CourseResponse> getCourseByName(
             @PathVariable("name") String name
     ) {
-        Course course = service.getCourseByName(name);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(course);
+        CourseResponse courseResponse = service.getCourseResponseByName(name);
+
+        if (courseResponse != null) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(courseResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
     }
 }

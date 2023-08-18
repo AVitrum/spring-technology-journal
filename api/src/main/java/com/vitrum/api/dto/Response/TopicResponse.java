@@ -5,18 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourseResponse {
+public class TopicResponse {
 
     private Long id;
-    private Long userId;
     private String name;
     private String description;
-    private List<TopicResponse> topics = new ArrayList<>();
+    private String additionalResources;
+    private Long courseId;
 }
