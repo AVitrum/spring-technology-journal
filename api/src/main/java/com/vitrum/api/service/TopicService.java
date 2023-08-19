@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,22 +23,14 @@ public class TopicService {
 
     public List<TopicResponse> getAllTopics() {
         List<Topic> topics = repository.findAll();
-        List<TopicResponse> topicResponses = new ArrayList<>();
-
-        for (Topic topic : topics) {
-            topicResponses.add(mapTopicToTopicResponse(topic));
-        }
-        return topicResponses;
+        return topics.stream().map(this::getTopicResponse).collect(Collectors.toList());
     }
 
     public List<TopicResponse> getAllTopicsByCourse(Course course) {
         Optional<List<Topic>> topics = repository.findByCourse(course);
         List<TopicResponse> topicResponses = new ArrayList<>();
-
         if (topics.isPresent()) {
-            for (Topic topic : topics.get()) {
-                topicResponses.add(mapTopicToTopicResponse(topic));
-            }
+            topicResponses = topics.get().stream().map(this::getTopicResponse).collect(Collectors.toList());
         }
         return topicResponses;
     }
@@ -49,16 +42,9 @@ public class TopicService {
                 .additionalResources(topicRequest.getAdditionalResources())
                 .course(course)
                 .build();
-
         repository.save(topic);
 
-        return TopicResponse.builder()
-                .id(topic.getId())
-                .name(topic.getName())
-                .description(topic.getDescription())
-                .additionalResources(topic.getAdditionalResources())
-                .courseId(topic.getCourse().getId())
-                .build();
+        return getTopicResponse(topic);
     }
 
     public Course getCourseByName(String name) {
@@ -66,7 +52,7 @@ public class TopicService {
         return optionalCourse.orElse(null);
     }
 
-    private TopicResponse mapTopicToTopicResponse(Topic topic) {
+    private TopicResponse getTopicResponse(Topic topic) {
         return TopicResponse.builder()
                 .id(topic.getId())
                 .name(topic.getName())

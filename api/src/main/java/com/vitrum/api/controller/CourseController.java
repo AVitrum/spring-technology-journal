@@ -30,7 +30,7 @@ public class CourseController {
 
 
     @GetMapping
-    public List<Course> getAllCourses() {
+    public List<CourseResponse> getAllCourses() {
         return service.getAllCourses();
     }
 

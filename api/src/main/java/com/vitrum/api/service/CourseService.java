@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +22,15 @@ public class CourseService {
 
     private final CourseRepository repository;
 
-    public List<Course> getAllCourses() {
-        return repository.findAll();
+    public List<CourseResponse> getAllCourses() {
+        List<Course> courses = repository.findAll();
+        List<CourseResponse> courseResponses = new ArrayList<>();
+
+        for (Course course : courses) {
+            courseResponses.add(getCourseResponse(course, getTopicResponses(course)));
+        }
+
+        return courseResponses;
     }
 
     public CourseResponse getCourseResponseByName(String name) {
@@ -30,19 +38,9 @@ public class CourseService {
 
         if (optionalCourse.isPresent()) {
             Course course = optionalCourse.get();
-            List<Topic> topics = course.getTopics();
+            List<TopicResponse> topicResponses = getTopicResponses(course);
 
-            List<TopicResponse> topicResponses = topics.stream()
-                    .map(this::mapTopicToTopicResponse)
-                    .collect(Collectors.toList());
-
-            return CourseResponse.builder()
-                    .id(course.getId())
-                    .name(course.getName())
-                    .description(course.getDescription())
-                    .userId(course.getTeacher().getId())
-                    .topics(topicResponses)
-                    .build();
+            return getCourseResponse(course, topicResponses);
         }
 
         return null;
@@ -61,6 +59,23 @@ public class CourseService {
                 .description(course.getDescription())
                 .userId(course.getTeacher().getId())
                 .build();
+    }
+
+    private CourseResponse getCourseResponse(Course course, List<TopicResponse> topicResponses) {
+        return CourseResponse.builder()
+                .id(course.getId())
+                .name(course.getName())
+                .description(course.getDescription())
+                .userId(course.getTeacher().getId())
+                .topics(topicResponses)
+                .build();
+    }
+
+    private List<TopicResponse> getTopicResponses(Course course) {
+        List<Topic> topics = course.getTopics();
+        return topics.stream()
+                .map(this::mapTopicToTopicResponse)
+                .collect(Collectors.toList());
     }
 
     private TopicResponse mapTopicToTopicResponse(Topic topic) {

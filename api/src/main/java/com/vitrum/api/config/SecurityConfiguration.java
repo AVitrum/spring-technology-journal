@@ -1,5 +1,6 @@
 package com.vitrum.api.config;
 
+import com.vitrum.api.entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +27,10 @@ public class SecurityConfiguration {
                 .cors()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll()
+                .requestMatchers(
+                        "/api/v1/auth/register",
+                        "/api/v1/auth/authenticate")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
