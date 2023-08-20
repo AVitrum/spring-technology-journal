@@ -2,7 +2,6 @@ package com.vitrum.api.controller;
 
 import com.vitrum.api.dto.Request.CourseRequest;
 import com.vitrum.api.dto.Response.CourseResponse;
-import com.vitrum.api.entity.Course;
 import com.vitrum.api.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
