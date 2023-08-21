@@ -46,6 +46,11 @@ public class CourseService {
         return null;
     }
 
+    public Course getCourseByName(String name) {
+        Optional<Course> optionalCourse = repository.findByName(name);
+        return optionalCourse.orElse(null);
+    }
+
     public CourseResponse createCourse(CourseRequest courseRequest, UserDetails userDetails) {
         var course = Course.builder()
                 .name(courseRequest.getName())

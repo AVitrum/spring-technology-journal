@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     Optional<List<Topic>> findByCourse(Course course);
+    Optional<Topic> findByNameAndCourse(String name, Course course);
 }

@@ -1,8 +1,12 @@
 package com.vitrum.api.repository;
 
 import com.vitrum.api.entity.Task;
+import com.vitrum.api.entity.Topic;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TaskRepository extends JpaRepository<Task, Long> {
+import java.util.List;
+import java.util.Optional;
 
+public interface TaskRepository extends JpaRepository<Task, Long> {
+    Optional<List<Task>> findByTopic(Topic topic);
 }

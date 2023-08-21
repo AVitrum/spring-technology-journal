@@ -3,6 +3,7 @@ package com.vitrum.api.controller;
 import com.vitrum.api.dto.Request.TopicRequest;
 import com.vitrum.api.dto.Response.TopicResponse;
 import com.vitrum.api.entity.Course;
+import com.vitrum.api.service.CourseService;
 import com.vitrum.api.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 public class TopicController {
 
     private final TopicService service;
+    private final CourseService courseService;
 
     @PostMapping("/{courseName}")
     public ResponseEntity<TopicResponse> addTopicToCourse(
@@ -23,7 +25,7 @@ public class TopicController {
             @RequestBody TopicRequest topicRequest
     ) {
         topicRequest.setCourseName(courseName);
-        Course course = service.getCourseByName(topicRequest.getCourseName());
+        Course course = courseService.getCourseByName(topicRequest.getCourseName());
         return ResponseEntity.ok(service.createTopic(topicRequest, course));
     }
 
@@ -36,7 +38,7 @@ public class TopicController {
     public List<TopicResponse> getAllTopicsByCourse(
             @PathVariable String courseName
     ) {
-        Course course = service.getCourseByName(courseName);
+        Course course = courseService.getCourseByName(courseName);
         return service.getAllTopicsByCourse(course);
     }
 }

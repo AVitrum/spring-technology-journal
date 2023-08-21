@@ -4,7 +4,6 @@ import com.vitrum.api.dto.Request.TopicRequest;
 import com.vitrum.api.dto.Response.TopicResponse;
 import com.vitrum.api.entity.Course;
 import com.vitrum.api.entity.Topic;
-import com.vitrum.api.repository.CourseRepository;
 import com.vitrum.api.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 public class TopicService {
 
     private final TopicRepository repository;
-    private final CourseRepository courseRepository;
 
     public List<TopicResponse> getAllTopics() {
         List<Topic> topics = repository.findAll();
@@ -47,9 +45,9 @@ public class TopicService {
         return getTopicResponse(topic);
     }
 
-    public Course getCourseByName(String name) {
-        Optional<Course> optionalCourse = courseRepository.findByName(name);
-        return optionalCourse.orElse(null);
+    public Topic getTopicByNameAndCourse(String name, Course course) {
+        Optional<Topic> optionalTopic = repository.findByNameAndCourse(name, course);
+        return optionalTopic.orElse(null);
     }
 
     private TopicResponse getTopicResponse(Topic topic) {

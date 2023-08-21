@@ -24,7 +24,10 @@ public class CourseController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody CourseRequest courseRequest
     ) {
-        return ResponseEntity.ok(service.createCourse(courseRequest, userDetails));
+        CourseResponse response = service.createCourse(courseRequest, userDetails);
+        if (response == null)
+            return ResponseEntity.status(HttpStatus.FOUND).body(null);
+        return ResponseEntity.ok(response);
     }
 
 
