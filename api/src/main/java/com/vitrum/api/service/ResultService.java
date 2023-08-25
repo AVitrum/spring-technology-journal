@@ -3,6 +3,7 @@ package com.vitrum.api.service;
 import com.vitrum.api.dto.Request.ResultRequest;
 import com.vitrum.api.dto.Response.ResultResponse;
 import com.vitrum.api.entity.Result;
+import com.vitrum.api.entity.Task;
 import com.vitrum.api.entity.User;
 import com.vitrum.api.repository.ResultRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,20 @@ public class ResultService {
                 .build();
         repository.save(result);
         return getResultResponse(result);
+    }
+
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    public void addScoreToResult(Result result, int score) {
+        result.setScore(score);
+        repository.save(result);
+    }
+
+    public Result getResultByIdAndTask(Long id, Task task) {
+        Optional<Result> opResult = repository.findByIdAndTask(id, task);
+        return opResult.orElse(null);
     }
 
     private ResultResponse getResultResponse(Result result) {

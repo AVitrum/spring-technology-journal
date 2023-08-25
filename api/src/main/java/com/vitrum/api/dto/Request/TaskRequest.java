@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,6 +16,6 @@ public class TaskRequest {
     private String courseName;
     private String topicName;
     private String taskType;
-    private LocalDate dueDate;
+    private String dueDate;
     private int maxScore;
 }

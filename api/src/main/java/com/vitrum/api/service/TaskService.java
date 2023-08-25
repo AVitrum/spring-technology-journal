@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,17 +25,22 @@ public class TaskService {
         return tasks.stream().map(this::getTaskResponse).collect(Collectors.toList());
     }
 
-    public Task getTaskByName(String name) {
-        return repository.findByName(name).orElse(null);
+    public Task getTaskByNameAndTopic(String name, Topic topic) {
+        Optional<Task> opTask = repository.findByNameAndTopic(name, topic);
+        return opTask.orElse(null);
     }
 
     public TaskResponse createTask(TaskRequest taskRequest, Topic topic) {
+        LocalDate dueDate = LocalDate.parse(
+                taskRequest.getDueDate(),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        );
         var task = Task.builder()
                 .name(taskRequest.getName())
                 .description(taskRequest.getDescription())
                 .taskType(taskRequest.getTaskType())
                 .maxScore(taskRequest.getMaxScore())
-                .dueDate(taskRequest.getDueDate())
+                .dueDate(dueDate)
                 .creationDate(LocalDate.now())
                 .topic(topic)
                 .build();

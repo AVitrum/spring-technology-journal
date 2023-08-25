@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/course")
+@RequestMapping("/api/v1/module/course")
 @RequiredArgsConstructor
 public class CourseController {
 
@@ -50,4 +50,5 @@ public class CourseController {
                     .body(null);
         }
     }
+
 }

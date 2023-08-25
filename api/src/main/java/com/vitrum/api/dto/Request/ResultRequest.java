@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class ResultRequest {
 
     private String answer;
+    private int score;
     private Task task;
     private User student;
 }

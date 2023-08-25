@@ -31,12 +31,16 @@ public class SecurityConfiguration {
                         .permitAll()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/course/**", "/api/v1/topic/**", "/api/v1/task/**")
+                        .requestMatchers("/api/v1/module/**")
                         .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/result/**")
-                        .hasAnyAuthority(Role.STUDENT.name())
+                        .requestMatchers("/api/v1/module/result/**")
+                        .hasAnyAuthority(Role.STUDENT.name(), Role.ADMIN.name())
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/module/result/addScore/**")
+                        .hasAnyAuthority(Role.TEACHER.name())
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
