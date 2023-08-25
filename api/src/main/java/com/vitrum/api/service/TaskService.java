@@ -23,17 +23,8 @@ public class TaskService {
         return tasks.stream().map(this::getTaskResponse).collect(Collectors.toList());
     }
 
-    private TaskResponse getTaskResponse(Task task) {
-        return TaskResponse.builder()
-                .id(task.getId())
-                .name(task.getName())
-                .description(task.getDescription())
-                .maxScore(task.getMaxScore())
-                .taskType(task.getTaskType())
-                .creationDate(task.getCreationDate())
-                .dueDate(task.getDueDate())
-                .topicId(task.getTopic().getId())
-                .build();
+    public Task getTaskByName(String name) {
+        return repository.findByName(name).orElse(null);
     }
 
     public TaskResponse createTask(TaskRequest taskRequest, Topic topic) {
@@ -48,5 +39,18 @@ public class TaskService {
                 .build();
         repository.save(task);
         return getTaskResponse(task);
+    }
+
+    private TaskResponse getTaskResponse(Task task) {
+        return TaskResponse.builder()
+                .id(task.getId())
+                .name(task.getName())
+                .description(task.getDescription())
+                .maxScore(task.getMaxScore())
+                .taskType(task.getTaskType())
+                .creationDate(task.getCreationDate())
+                .dueDate(task.getDueDate())
+                .topicId(task.getTopic().getId())
+                .build();
     }
 }

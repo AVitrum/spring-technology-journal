@@ -31,8 +31,12 @@ public class SecurityConfiguration {
                         .permitAll()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/course", "/api/v1/topic", "/api/v1/task")
+                        .requestMatchers("/api/v1/course/**", "/api/v1/topic/**", "/api/v1/task/**")
                         .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name())
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/result/**")
+                        .hasAnyAuthority(Role.STUDENT.name())
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,13 +23,8 @@ public class CourseService {
 
     public List<CourseResponse> getAllCourses() {
         List<Course> courses = repository.findAll();
-        List<CourseResponse> courseResponses = new ArrayList<>();
 
-        for (Course course : courses) {
-            courseResponses.add(getCourseResponse(course, getTopicResponses(course)));
-        }
-
-        return courseResponses;
+        return courses.stream().map(course -> getCourseResponse(course, getTopicResponses(course))).collect(Collectors.toList());
     }
 
     public CourseResponse getCourseResponseByName(String name) {
