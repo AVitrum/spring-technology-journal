@@ -34,6 +34,11 @@ public class TaskService {
     }
 
     public TaskResponse createTask(TaskRequest taskRequest, Topic topic) {
+        Task existingTask = repository.findByNameAndTopic(taskRequest.getName(), topic).orElse(null);
+        if (existingTask != null) {
+            throw new IllegalArgumentException("Task with the same name already exists in this topic.");
+        }
+
         LocalDate dueDate = LocalDate.parse(
                 taskRequest.getDueDate(),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd")

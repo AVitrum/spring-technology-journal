@@ -24,7 +24,7 @@ public class TaskController {
     private final CourseService courseService;
 
     @PostMapping({"/{courseName}/{topicName}"})
-    public ResponseEntity<TaskResponse> addTaskToTopic(
+    public ResponseEntity<?> addTaskToTopic(
             @PathVariable String courseName,
             @PathVariable String topicName,
             @RequestBody TaskRequest taskRequest
@@ -33,7 +33,11 @@ public class TaskController {
         taskRequest.setTopicName(topicName);
         Course course = courseService.getCourseByName(courseName);
         Topic topic = topicService.getTopicByNameAndCourse(topicName, course);
-        return ResponseEntity.ok(service.createTask(taskRequest, topic));
+        try {
+            return ResponseEntity.ok(service.createTask(taskRequest, topic));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping
