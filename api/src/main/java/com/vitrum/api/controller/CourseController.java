@@ -20,14 +20,15 @@ public class CourseController {
     private final CourseService service;
 
     @PostMapping
-    public ResponseEntity<CourseResponse> createCourse(
+    public ResponseEntity<?> createCourse(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody CourseRequest courseRequest
     ) {
-        CourseResponse response = service.createCourse(courseRequest, userDetails);
-        if (response == null)
-            return ResponseEntity.status(HttpStatus.FOUND).body(null);
-        return ResponseEntity.ok(response);
+        try {
+            return ResponseEntity.ok(service.createCourse(courseRequest, userDetails));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 

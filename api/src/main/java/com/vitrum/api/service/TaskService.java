@@ -2,8 +2,10 @@ package com.vitrum.api.service;
 
 import com.vitrum.api.dto.Request.TaskRequest;
 import com.vitrum.api.dto.Response.TaskResponse;
+import com.vitrum.api.entity.Result;
 import com.vitrum.api.entity.Task;
 import com.vitrum.api.entity.Topic;
+import com.vitrum.api.repository.ResultRepository;
 import com.vitrum.api.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class TaskService {
 
     private final TaskRepository repository;
+    private final ResultRepository resultRepository;
 
     public List<TaskResponse> getAllTasks() {
         List<Task> tasks = repository.findAll();
@@ -48,6 +51,15 @@ public class TaskService {
         return getTaskResponse(task);
     }
 
+    public void deleteById(Long id) {
+        Task task = repository.findById(id).orElse(null);
+        if (task != null) {
+            List<Result> results = task.getResults();
+            resultRepository.deleteAll(results);
+            repository.delete(task);
+        }
+    }
+
     private TaskResponse getTaskResponse(Task task) {
         return TaskResponse.builder()
                 .id(task.getId())
@@ -60,4 +72,5 @@ public class TaskService {
                 .topicId(task.getTopic().getId())
                 .build();
     }
+
 }

@@ -4,6 +4,7 @@ import com.vitrum.api.entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,19 +29,30 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**")
-                        .permitAll()
-                )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/module/**")
-                        .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name())
-                )
-                .authorizeHttpRequests(auth -> auth
+                            .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/module/course/**")
+                            .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
+                        .requestMatchers("/api/v1/module/course/**")
+
+                            .hasAnyAuthority(Role.ADMIN.name(), Role.TEACHER.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/module/topic/**")
+                            .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
+                        .requestMatchers("/api/v1/module/topic/**")
+                            .hasAnyAuthority(Role.ADMIN.name(), Role.TEACHER.name())
+
+                        .requestMatchers(HttpMethod.GET ,"/api/v1/module/task/**")
+                            .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
+                        .requestMatchers("/api/v1/module/task/**")
+                            .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name())
+
+                        .requestMatchers(HttpMethod.POST ,"/api/v1/module/result/**")
+                            .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
+                        .requestMatchers(HttpMethod.GET ,"/api/v1/module/result/**")
+                            .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
                         .requestMatchers("/api/v1/module/result/**")
-                        .hasAnyAuthority(Role.STUDENT.name(), Role.ADMIN.name())
-                )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/module/result/addScore/**")
-                        .hasAnyAuthority(Role.TEACHER.name())
+                            .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name())
+
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

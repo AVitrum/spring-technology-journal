@@ -46,6 +46,10 @@ public class CourseService {
     }
 
     public CourseResponse createCourse(CourseRequest courseRequest, UserDetails userDetails) {
+        Course existingCourse = repository.findByName(courseRequest.getName()).orElse(null);
+        if (existingCourse != null) {
+            throw new IllegalArgumentException("Course with the same name already exists.");
+        }
         var course = Course.builder()
                 .name(courseRequest.getName())
                 .description(courseRequest.getDescription())

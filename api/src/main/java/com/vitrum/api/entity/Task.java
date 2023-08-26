@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "task")
@@ -30,4 +32,6 @@ public class Task {
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
+    @OneToMany(mappedBy = "task")
+    private List<Result> results = new ArrayList<>();
 }

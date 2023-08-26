@@ -34,6 +34,10 @@ public class TopicService {
     }
 
     public TopicResponse createTopic(TopicRequest topicRequest, Course course) {
+        Topic existingTopic = repository.findByNameAndCourse(topicRequest.getName(), course).orElse(null);
+        if (existingTopic != null) {
+            throw new IllegalArgumentException("Topic with the same name already exists in this course.");
+        }
         var topic = Topic.builder()
                 .name(topicRequest.getName())
                 .description(topicRequest.getDescription())

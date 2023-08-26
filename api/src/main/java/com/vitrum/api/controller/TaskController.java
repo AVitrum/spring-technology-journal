@@ -8,6 +8,7 @@ import com.vitrum.api.service.CourseService;
 import com.vitrum.api.service.TaskService;
 import com.vitrum.api.service.TopicService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class TaskController {
     private final CourseService courseService;
 
     @PostMapping({"/{courseName}/{topicName}"})
-    public ResponseEntity<TaskResponse> addTaskToCourse(
+    public ResponseEntity<TaskResponse> addTaskToTopic(
             @PathVariable String courseName,
             @PathVariable String topicName,
             @RequestBody TaskRequest taskRequest
@@ -38,5 +39,13 @@ public class TaskController {
     @GetMapping
     public List<TaskResponse> getAllTasks() {
         return service.getAllTasks();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTaskById(
+            @PathVariable Long id
+    ) {
+        service.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
 }

@@ -20,13 +20,17 @@ public class TopicController {
     private final CourseService courseService;
 
     @PostMapping("/{courseName}")
-    public ResponseEntity<TopicResponse> addTopicToCourse(
+    public ResponseEntity<?> addTopicToCourse(
             @PathVariable String courseName,
             @RequestBody TopicRequest topicRequest
     ) {
         topicRequest.setCourseName(courseName);
         Course course = courseService.getCourseByName(topicRequest.getCourseName());
-        return ResponseEntity.ok(service.createTopic(topicRequest, course));
+        try {
+            return ResponseEntity.ok(service.createTopic(topicRequest, course));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping
