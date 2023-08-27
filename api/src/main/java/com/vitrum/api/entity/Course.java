@@ -29,6 +29,25 @@ public class Course {
     @JoinColumn(name = "teacher_id")
     private User teacher;
 
+    @ManyToMany(mappedBy = "courses")
+    private List<User> students = new ArrayList<>();
+
     @OneToMany(mappedBy = "course")
     private List<Topic> topics = new ArrayList<>();
+
+    public void addStudent(User student) {
+        students.add(student);
+        student.getCourses().add(this);
+    }
+
+    public void removeStudent(User student) {
+        students.remove(student);
+        student.getCourses().remove(this);
+    }
+
+    public void enrollInCourse(User student) {
+        students.add(student);
+        student.getCourses().add(this);
+    }
+
 }

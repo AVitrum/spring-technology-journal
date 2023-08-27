@@ -6,6 +6,7 @@ import com.vitrum.api.entity.Course;
 import com.vitrum.api.service.CourseService;
 import com.vitrum.api.service.TopicService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +45,13 @@ public class TopicController {
     ) {
         Course course = courseService.getCourseByName(courseName);
         return service.getAllTopicsByCourse(course);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTopicById(
+            @PathVariable Long id
+    ) {
+        service.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
 }

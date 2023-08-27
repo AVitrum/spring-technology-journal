@@ -31,6 +31,19 @@ public class CourseController {
         }
     }
 
+    @PostMapping("/{courseId}/enroll/{userId}")
+    public ResponseEntity<?> enrollUserToCourse(
+            @PathVariable Long courseId,
+            @PathVariable Long userId
+    ) {
+        try {
+            service.enrollUserToCourse(courseId, userId);
+            return ResponseEntity.ok("User enrolled in the course successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
     @GetMapping
     public List<CourseResponse> getAllCourses() {
@@ -50,6 +63,14 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(null);
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(
+            @PathVariable Long id
+    ) {
+        service.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
 
 }

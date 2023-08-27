@@ -3,10 +3,12 @@ package com.vitrum.api.service;
 import com.vitrum.api.dto.Request.CourseRequest;
 import com.vitrum.api.dto.Response.CourseResponse;
 import com.vitrum.api.dto.Response.TopicResponse;
+import com.vitrum.api.dto.Response.UserProfileResponse;
 import com.vitrum.api.entity.Course;
 import com.vitrum.api.entity.Topic;
 import com.vitrum.api.entity.User;
 import com.vitrum.api.repository.CourseRepository;
+import com.vitrum.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 public class CourseService {
 
     private final CourseRepository repository;
+    private final TopicService topicService;
+    private final UserRepository userRepository;
 
     public List<CourseResponse> getAllCourses() {
         List<Course> courses = repository.findAll();
@@ -64,6 +68,31 @@ public class CourseService {
                 .build();
     }
 
+    public void deleteById(Long id) {
+        Course course = repository.findById(id).orElse(null);
+        if (course != null) {
+            List<Topic> topics = course.getTopics();
+            for (Topic topic : topics) {
+                topicService.deleteById(topic.getId());
+            }
+            repository.delete(course);
+        }
+    }
+
+    public void enrollUserToCourse(Long courseId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Course course = repository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
+        if (!course.getStudents().contains(user)) {
+            course.addStudent(user);
+            repository.save(course);
+        }
+    }
+
+
     private CourseResponse getCourseResponse(Course course, List<TopicResponse> topicResponses) {
         return CourseResponse.builder()
                 .id(course.getId())
@@ -71,6 +100,7 @@ public class CourseService {
                 .description(course.getDescription())
                 .userId(course.getTeacher().getId())
                 .topics(topicResponses)
+                .students(getUserProfileResponse(course))
                 .build();
     }
 
@@ -79,6 +109,23 @@ public class CourseService {
         return topics.stream()
                 .map(this::mapTopicToTopicResponse)
                 .collect(Collectors.toList());
+    }
+
+    private List<UserProfileResponse> getUserProfileResponse(Course course) {
+        List<User> students = course.getStudents();
+        return students.stream()
+                .map(this::mapUserToUserProfileResponse)
+                .collect(Collectors.toList());
+    }
+
+    private UserProfileResponse mapUserToUserProfileResponse(User user) {
+        return UserProfileResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
     }
 
     private TopicResponse mapTopicToTopicResponse(Topic topic) {

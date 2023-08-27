@@ -19,4 +19,5 @@ public class CourseResponse {
     private String name;
     private String description;
     private List<TopicResponse> topics = new ArrayList<>();
+    private List<UserProfileResponse> students = new ArrayList<>();
 }

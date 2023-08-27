@@ -3,6 +3,7 @@ package com.vitrum.api.service;
 import com.vitrum.api.dto.Request.TopicRequest;
 import com.vitrum.api.dto.Response.TopicResponse;
 import com.vitrum.api.entity.Course;
+import com.vitrum.api.entity.Task;
 import com.vitrum.api.entity.Topic;
 import com.vitrum.api.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class TopicService {
 
     private final TopicRepository repository;
+    private final TaskService taskService;
 
     public List<TopicResponse> getAllTopics() {
         List<Topic> topics = repository.findAll();
@@ -62,5 +64,16 @@ public class TopicService {
                 .additionalResources(topic.getAdditionalResources())
                 .courseId(topic.getCourse().getId())
                 .build();
+    }
+
+    public void deleteById(Long id) {
+        Topic topic = repository.findById(id).orElse(null);
+        if (topic != null) {
+            List<Task> tasks = topic.getTasks();
+            for (Task task : tasks) {
+                taskService.deleteById(task.getId());
+            }
+            repository.delete(topic);
+        }
     }
 }
