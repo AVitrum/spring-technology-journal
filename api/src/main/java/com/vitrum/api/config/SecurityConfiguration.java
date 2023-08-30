@@ -34,7 +34,6 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/v1/module/course/**")
                             .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
                         .requestMatchers("/api/v1/module/course/**")
-
                             .hasAnyAuthority(Role.ADMIN.name(), Role.TEACHER.name())
                         .requestMatchers(HttpMethod.GET, "/api/v1/module/topic/**")
                             .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
