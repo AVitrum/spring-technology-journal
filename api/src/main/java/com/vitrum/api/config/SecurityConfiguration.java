@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -27,14 +28,17 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(httpSecurityCorsConfigurer ->
+                        httpSecurityCorsConfigurer.configurationSource(request ->
+                                new CorsConfiguration().applyPermitDefaultValues()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**")
                             .permitAll()
-
                         .requestMatchers(HttpMethod.GET, "/api/v1/module/course/**")
                             .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
                         .requestMatchers("/api/v1/module/course/**")
                             .hasAnyAuthority(Role.ADMIN.name(), Role.TEACHER.name())
+
                         .requestMatchers(HttpMethod.GET, "/api/v1/module/topic/**")
                             .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
                         .requestMatchers("/api/v1/module/topic/**")
@@ -49,6 +53,7 @@ public class SecurityConfiguration {
                             .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
                         .requestMatchers(HttpMethod.GET ,"/api/v1/module/result/**")
                             .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name(), Role.STUDENT.name())
+
                         .requestMatchers("/api/v1/module/result/**")
                             .hasAnyAuthority(Role.TEACHER.name(), Role.ADMIN.name())
 
